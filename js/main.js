@@ -10,7 +10,6 @@ function getRandomInteger(min, max) {
 
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
-getRandomInteger(1, 2);
 
 //RANDOM NUMBER WITH FLOATING POINT
 
@@ -22,8 +21,6 @@ function getRandomFloatingPoint(min, max, rounding) {
   const coast = Math.random() * (max - min) + min;
   return coast.toFixed(rounding);
 }
-getRandomFloatingPoint(1, 32, 4);
-
 
 // TASK: MORE DETAILS
 
@@ -52,22 +49,17 @@ function generateArrayRandomNumber (min, max) {
 }
 
 const author = {
-  avatar: [
-    'img/avatars/user01.png',
-    'img/avatars/user02.png',
-    'img/avatars/user03.png',
-    'img/avatars/user04.png',
-    'img/avatars/user05.png',
-    'img/avatars/user06.png',
-    'img/avatars/user07.png',
-    'img/avatars/user08.png',
-  ],
+  avatar: [],
 };
 
-generateArrayRandomNumber(0, author.avatar.length - 1);
+for (let index = 1; index <= 8; index++) {
+  author.avatar.push(`img/avatars/user0${index}.png`);
+}
 
+const minAvatarArrayLength = 0;
+generateArrayRandomNumber(minAvatarArrayLength, author.avatar.length - 1);
 
-const TYPE = [
+const TYPES = [
   'palace',
   'flat',
   'house',
@@ -75,13 +67,13 @@ const TYPE = [
   'hotel',
 ];
 
-const CHECKIN_TIME = [
+const CHECKIN_SLOTS = [
   '12:00',
   '13:00',
   '14:00',
 ];
 
-const CHECKOUT_TIME = [
+const CHECKOUT_SLOTS = [
   '12:00',
   '13:00',
   '14:00',
@@ -104,23 +96,20 @@ const PHOTOS = [
 
 // location, объект — местоположение в виде географических координат. Состоит из двух полей:
 const getLocation = () => {
-  const randomLat = getRandomFloatingPoint(35.65000, 35.70000, 5); // lat, число с плавающей точкой — широта, случайное значение от 35.65000 до 35.70000.
-  const randomLng = getRandomFloatingPoint(139.70000, 139.80000, 5); // lng, число с плавающей точкой — долгота, случайное значение от 139.70000 до 139.80000.
+  const minLocationLatValue = 35.65000;
+  const maxLocationLatValue = 35.70000;
+  const roundingForLocationValue = 5;
+  const randomLat = getRandomFloatingPoint(minLocationLatValue, maxLocationLatValue, roundingForLocationValue); // lat, число с плавающей точкой — широта, случайное значение от 35.65000 до 35.70000.
+
+  const minLocationLngValue = 139.70000;
+  const maxLocationLngValue = 139.80000;
+  const randomLng = getRandomFloatingPoint(minLocationLngValue, maxLocationLngValue, roundingForLocationValue); // lng, число с плавающей точкой — долгота, случайное значение от 139.70000 до 139.80000.
 
   return {
     lat: randomLat,
     lng: randomLng,
   };
 };
-
-getLocation();
-
-const getRandomArrayElements = (elements) => {
-  const randomElements = elements[getRandomInteger(0, elements.length - 1)];
-  return randomElements;
-};
-
-getRandomArrayElements(TYPE);
 
 const getRandomArray = (randomArray) => {
   const createdRandomArray = new Array(getRandomInteger(1, randomArray.length - 1));
@@ -130,32 +119,42 @@ const getRandomArray = (randomArray) => {
 
 // offer, объект — содержит информацию об объявлении. Состоит из полей:
 const createOffer = () => {
-  const contrivedTitle = 'Придуманынй заголовок предложения';   // title, строка — заголовок предложения. Придумайте самостоятельно.
-  const randomAdressLocationX = getLocation().lat;
-  const randomAdressLocationY = getLocation().lng;  // address, строка — адрес предложения. Для простоты пусть пока составляется из географических координат по маске {{location.x}}, {{location.y}}.
-  const randomPrice = getRandomInteger(1, 10000);   // price, число — стоимость. Случайное целое положительное число.
-  const randomType = getRandomArray(TYPE);  // type, строка — одно из пяти фиксированных значений: palace, flat, house, bungalow или hotel.
-  const randomRoom = getRandomInteger(1, 10); // rooms, число — количество комнат. Случайное целое положительное число.
-  const randomGuests = getRandomInteger(1, 10);  // guests, число — количество гостей, которое можно разместить. Случайное целое положительное число.
-  const randomCheckin = getRandomInteger(0, CHECKIN_TIME.length - 1); // checkin, строка — одно из трёх фиксированных значений: 12:00, 13:00 или 14:00.
-  const randomCheckout = getRandomInteger(0, CHECKOUT_TIME.length - 1); // checkout, строка — одно из трёх фиксированных значений: 12:00, 13:00 или 14:00.
-  const randomFeaturesArrayLength = getRandomInteger(0, FEATURES.length - 1);   // features, массив строк — массив случайной длины из значений: wifi, dishwasher, parking, washer, elevator, conditioner. Значения не должны повторяться.
-  const contrivedDescription = 'Придуманное описание помещения';  // description, строка — описание помещения. Придумайте самостоятельно.
-  const randomPhotosArrayLength = getRandomArray(PHOTOS);   // photos, массив строк — массив случайной длины из значений: https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/duonguyen-8LrGtIxxa4w.jpg, https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/brandon-hoogenboom-SNxQGWxZQi0.jpg, https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/claire-rendall-b6kAwr1i0Iw.jpg.
 
-  return {
-    title: contrivedTitle,
-    address: `Координаты долготы: ${randomAdressLocationX}, координаты широты: ${randomAdressLocationY}`,
-    price: randomPrice,
-    type: randomType,
-    rooms: randomRoom,
-    guests: randomGuests,
-    checkin: CHECKIN_TIME[randomCheckin],
-    checkout: CHECKOUT_TIME[randomCheckout],
-    features: FEATURES[randomFeaturesArrayLength],
-    description: contrivedDescription,
-    photos: randomPhotosArrayLength,
+  const randomLocation = getLocation(); // address, строка — адрес предложения. Для простоты пусть пока составляется из географических координат по маске {{location.x}}, {{location.y}}.
+
+  const minPrice = 1;
+  const maxPrice = 10000;
+
+  const minRooms = 1;
+  const maxRooms = 10;
+
+  const minGuests = 1;
+  const maxGuests = 10;
+
+  const minCheckingSlotsArrayLength = 0;
+
+  const minCheckoutSlotsArrayLength = 0;
+
+  const minTypesArrayLength = 0;
+
+  const offer = {
+    title: 'Придуманынй заголовок предложения', // title, строка — заголовок предложения. Придумайте самостоятельно.
+    address: `${randomLocation.lat}, ${randomLocation.lng}`,
+    price: getRandomInteger(minPrice, maxPrice), // price, число — стоимость. Случайное целое положительное число.
+    type: TYPES[getRandomInteger(minTypesArrayLength, FEATURES.length - 1)], // type, строка — одно из пяти фиксированных значений: palace, flat, house, bungalow или hotel.
+    rooms: getRandomInteger(minRooms, maxRooms), // rooms, число — количество комнат. Случайное целое положительное число.
+    guests: getRandomInteger(minGuests, maxGuests), // guests, число — количество гостей, которое можно разместить. Случайное целое положительное число.
+    checkin: CHECKIN_SLOTS[getRandomInteger(minCheckingSlotsArrayLength, CHECKIN_SLOTS.length - 1)], // checkin, строка — одно из трёх фиксированных значений: 12:00, 13:00 или 14:00.
+    checkout: CHECKOUT_SLOTS[getRandomInteger(minCheckoutSlotsArrayLength, CHECKOUT_SLOTS.length - 1)], // checkout, строка — одно из трёх фиксированных значений: 12:00, 13:00 или 14:00.
+    features: getRandomArray(FEATURES), // features, массив строк — массив случайной длины из значений: wifi, dishwasher, parking, washer, elevator, conditioner. Значения не должны повторяться.
+    description: 'Придуманное описание помещения', // description, строка — описание помещения. Придумайте самостоятельно.
+    photos: getRandomArray(PHOTOS), // photos, массив строк — массив случайной длины из значений: https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/duonguyen-8LrGtIxxa4w.jpg, https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/brandon-hoogenboom-SNxQGWxZQi0.jpg, https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/claire-rendall-b6kAwr1i0Iw.jpg.
   };
+  return offer;
 };
 
-createOffer();
+const taskObject = createOffer();
+const taskArray = Object.values(taskObject);
+
+taskArray;
+taskArray;
