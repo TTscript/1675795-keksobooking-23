@@ -157,4 +157,3 @@ const taskObject = createOffer();
 const taskArray = Object.values(taskObject);
 
 taskArray;
-taskArray;
