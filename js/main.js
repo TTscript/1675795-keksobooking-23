@@ -1,3 +1,46 @@
+const OFFERS_NUMBER = 10;
+
+const MIN_LOCATION_VALUE = 35.65000;
+const MAX_LOCATION_VALUE = 35.70000;
+
+const MIN_LOCATION_LNG_VALUE = 139.70000;
+const MAX_LOCATION_LNG_VALUE = 139.80000;
+
+const TYPES = [
+  'palace',
+  'flat',
+  'house',
+  'bungalow',
+  'hotel',
+];
+
+const CHECKIN_SLOTS = [
+  '12:00',
+  '13:00',
+  '14:00',
+];
+
+const CHECKOUT_SLOTS = [
+  '12:00',
+  '13:00',
+  '14:00',
+];
+
+const FEATURES = [
+  'wifi',
+  'dishwasher',
+  'parking',
+  'washer',
+  'elevator',
+  'conditioner',
+];
+
+const PHOTOS = [
+  'https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/duonguyen-8LrGtIxxa4w.jpg',
+  'https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/brandon-hoogenboom-SNxQGWxZQi0.jpg',
+  'https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/claire-rendall-b6kAwr1i0Iw.jpg',
+];
+
 // RANDOM INTEGER NUMBER
 
 function getRandomInteger(min, max) {
@@ -59,52 +102,11 @@ for (let index = 1; index <= 8; index++) {
 const minAvatarArrayLength = 0;
 generateArrayRandomNumber(minAvatarArrayLength, author.avatar.length - 1);
 
-const TYPES = [
-  'palace',
-  'flat',
-  'house',
-  'bungalow',
-  'hotel',
-];
-
-const CHECKIN_SLOTS = [
-  '12:00',
-  '13:00',
-  '14:00',
-];
-
-const CHECKOUT_SLOTS = [
-  '12:00',
-  '13:00',
-  '14:00',
-];
-
-const FEATURES = [
-  'wifi',
-  'dishwasher',
-  'parking',
-  'washer',
-  'elevator',
-  'conditioner',
-];
-
-const PHOTOS = [
-  'https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/duonguyen-8LrGtIxxa4w.jpg',
-  'https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/brandon-hoogenboom-SNxQGWxZQi0.jpg',
-  'https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/claire-rendall-b6kAwr1i0Iw.jpg',
-];
-
 // location, объект — местоположение в виде географических координат. Состоит из двух полей:
 const getLocation = () => {
-  const minLocationLatValue = 35.65000;
-  const maxLocationLatValue = 35.70000;
   const roundingForLocationValue = 5;
-  const randomLat = getRandomFloatingPoint(minLocationLatValue, maxLocationLatValue, roundingForLocationValue); // lat, число с плавающей точкой — широта, случайное значение от 35.65000 до 35.70000.
-
-  const minLocationLngValue = 139.70000;
-  const maxLocationLngValue = 139.80000;
-  const randomLng = getRandomFloatingPoint(minLocationLngValue, maxLocationLngValue, roundingForLocationValue); // lng, число с плавающей точкой — долгота, случайное значение от 139.70000 до 139.80000.
-
+  const randomLat = getRandomFloatingPoint(MIN_LOCATION_VALUE, MAX_LOCATION_VALUE, roundingForLocationValue); // lat, число с плавающей точкой — широта, случайное значение от 35.65000 до 35.70000.
+  const randomLng = getRandomFloatingPoint(MIN_LOCATION_LNG_VALUE, MAX_LOCATION_LNG_VALUE, roundingForLocationValue); // lng, число с плавающей точкой — долгота, случайное значение от 139.70000 до 139.80000.
   return {
     lat: randomLat,
     lng: randomLng,
@@ -117,8 +119,9 @@ const getRandomArray = (randomArray) => {
   return slicedRandomArray;
 };
 
+
 // offer, объект — содержит информацию об объявлении. Состоит из полей:
-const createOffer = () => {
+const createOffer = (offersNumber) => {
 
   const randomLocation = getLocation(); // address, строка — адрес предложения. Для простоты пусть пока составляется из географических координат по маске {{location.x}}, {{location.y}}.
 
@@ -150,10 +153,16 @@ const createOffer = () => {
     description: 'Придуманное описание помещения', // description, строка — описание помещения. Придумайте самостоятельно.
     photos: getRandomArray(PHOTOS), // photos, массив строк — массив случайной длины из значений: https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/duonguyen-8LrGtIxxa4w.jpg, https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/brandon-hoogenboom-SNxQGWxZQi0.jpg, https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/claire-rendall-b6kAwr1i0Iw.jpg.
   };
-  return offer;
+
+  const offers = [];
+
+  for (let startNumber = 0; startNumber < offersNumber; startNumber++) {
+    offers.push(author, offer);
+  }
+
+  return offers;
 };
 
-const taskObject = createOffer();
-const taskArray = Object.values(taskObject);
+const taskObject = createOffer(OFFERS_NUMBER);
+taskObject;
 
-taskArray;
