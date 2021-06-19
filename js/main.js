@@ -41,6 +41,21 @@ const PHOTOS = [
   'https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/claire-rendall-b6kAwr1i0Iw.jpg',
 ];
 
+const MIN_PRICE = 1;
+const MAX_PRICE = 10000;
+
+const MIN_ROOMS = 1;
+const MAX_ROOMS = 10;
+
+const MIN_GUESTS = 1;
+const MAX_GUESTS = 10;
+
+const MIN_CHECKING_SLOTS_ARRAY_LENGTH = 0;
+
+const MIN_CHECKOUT_SLOTS_ARRAY_LENGTH = 0;
+
+const MIN_TYPES_ARRAY_LENGTH = 0;
+
 // RANDOM INTEGER NUMBER
 
 function getRandomInteger(min, max) {
@@ -74,33 +89,38 @@ function getRandomFloatingPoint(min, max, rounding) {
 // author, объект — описывает автора. Содержит одно поле:
 // avatar, строка — адрес изображения вида img/avatars/user{{xx}}.png, где {{xx}} — это число от 1 до 8 с ведущим нулём. Например, 01, 02 и т. д. Адреса изображений не повторяются.
 
-function generateArrayRandomNumber (min, max) {
-  let totalNumbers = max - min + 1;
-  const arrayTotalNumbers = [];
-  const arrayRandomNumbers = [];
-  while (totalNumbers--) {
-    arrayTotalNumbers.push(totalNumbers + min);
+const createAvatar = function () {
+
+  function generateArrayRandomNumber (min, max) {
+    let totalNumbers = max - min + 1;
+    const arrayTotalNumbers = [];
+    const arrayRandomNumbers = [];
+    while (totalNumbers--) {
+      arrayTotalNumbers.push(totalNumbers + min);
+    }
+
+    while (arrayTotalNumbers.length) {
+      const tempRandomNumber = Math.round(Math.random() * (arrayTotalNumbers.length - 1));
+      arrayRandomNumbers.push(arrayTotalNumbers[tempRandomNumber]);
+      arrayTotalNumbers.splice(tempRandomNumber, 1);
+    }
+
+    return arrayRandomNumbers;
   }
 
-  while (arrayTotalNumbers.length) {
-    const tempRandomNumber = Math.round(Math.random() * (arrayTotalNumbers.length - 1));
-    arrayRandomNumbers.push(arrayTotalNumbers[tempRandomNumber]);
-    arrayTotalNumbers.splice(tempRandomNumber, 1);
+  const author = {
+    avatar: [],
+  };
+
+  for (let index = 1; index <= 8; index++) {
+    author.avatar.push(`img/avatars/user0${index}.png`);
   }
 
-  return arrayRandomNumbers;
-}
-
-const author = {
-  avatar: [],
+  const minAvatarArrayLength = 0;
+  generateArrayRandomNumber(minAvatarArrayLength, author.avatar.length - 1);
+  return author.avatar;
 };
 
-for (let index = 1; index <= 8; index++) {
-  author.avatar.push(`img/avatars/user0${index}.png`);
-}
-
-const minAvatarArrayLength = 0;
-generateArrayRandomNumber(minAvatarArrayLength, author.avatar.length - 1);
 
 // location, объект — местоположение в виде географических координат. Состоит из двух полей:
 const getLocation = () => {
@@ -125,39 +145,32 @@ const createOffer = (offersNumber) => {
 
   const randomLocation = getLocation(); // address, строка — адрес предложения. Для простоты пусть пока составляется из географических координат по маске {{location.x}}, {{location.y}}.
 
-  const minPrice = 1;
-  const maxPrice = 10000;
-
-  const minRooms = 1;
-  const maxRooms = 10;
-
-  const minGuests = 1;
-  const maxGuests = 10;
-
-  const minCheckingSlotsArrayLength = 0;
-
-  const minCheckoutSlotsArrayLength = 0;
-
-  const minTypesArrayLength = 0;
-
   const offer = {
-    title: 'Придуманынй заголовок предложения', // title, строка — заголовок предложения. Придумайте самостоятельно.
-    address: `${randomLocation.lat}, ${randomLocation.lng}`,
-    price: getRandomInteger(minPrice, maxPrice), // price, число — стоимость. Случайное целое положительное число.
-    type: TYPES[getRandomInteger(minTypesArrayLength, FEATURES.length - 1)], // type, строка — одно из пяти фиксированных значений: palace, flat, house, bungalow или hotel.
-    rooms: getRandomInteger(minRooms, maxRooms), // rooms, число — количество комнат. Случайное целое положительное число.
-    guests: getRandomInteger(minGuests, maxGuests), // guests, число — количество гостей, которое можно разместить. Случайное целое положительное число.
-    checkin: CHECKIN_SLOTS[getRandomInteger(minCheckingSlotsArrayLength, CHECKIN_SLOTS.length - 1)], // checkin, строка — одно из трёх фиксированных значений: 12:00, 13:00 или 14:00.
-    checkout: CHECKOUT_SLOTS[getRandomInteger(minCheckoutSlotsArrayLength, CHECKOUT_SLOTS.length - 1)], // checkout, строка — одно из трёх фиксированных значений: 12:00, 13:00 или 14:00.
-    features: getRandomArray(FEATURES), // features, массив строк — массив случайной длины из значений: wifi, dishwasher, parking, washer, elevator, conditioner. Значения не должны повторяться.
-    description: 'Придуманное описание помещения', // description, строка — описание помещения. Придумайте самостоятельно.
-    photos: getRandomArray(PHOTOS), // photos, массив строк — массив случайной длины из значений: https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/duonguyen-8LrGtIxxa4w.jpg, https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/brandon-hoogenboom-SNxQGWxZQi0.jpg, https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/claire-rendall-b6kAwr1i0Iw.jpg.
+    author: {
+      avatar: createAvatar(),
+    },
+
+    offer: {
+      title: 'Придуманынй заголовок предложения', // title, строка — заголовок предложения. Придумайте самостоятельно.
+      address: `${randomLocation.lat}, ${randomLocation.lng}`,
+      price: getRandomInteger(MIN_PRICE, MAX_PRICE), // price, число — стоимость. Случайное целое положительное число.
+      type: TYPES[getRandomInteger(MIN_TYPES_ARRAY_LENGTH, FEATURES.length - 1)], // type, строка — одно из пяти фиксированных значений: palace, flat, house, bungalow или hotel.
+      rooms: getRandomInteger(MIN_ROOMS, MAX_ROOMS), // rooms, число — количество комнат. Случайное целое положительное число.
+      guests: getRandomInteger(MIN_GUESTS, MAX_GUESTS), // guests, число — количество гостей, которое можно разместить. Случайное целое положительное число.
+      checkin: CHECKIN_SLOTS[getRandomInteger(MIN_CHECKING_SLOTS_ARRAY_LENGTH, CHECKIN_SLOTS.length - 1)], // checkin, строка — одно из трёх фиксированных значений: 12:00, 13:00 или 14:00.
+      checkout: CHECKOUT_SLOTS[getRandomInteger(MIN_CHECKOUT_SLOTS_ARRAY_LENGTH, CHECKOUT_SLOTS.length - 1)], // checkout, строка — одно из трёх фиксированных значений: 12:00, 13:00 или 14:00.
+      features: getRandomArray(FEATURES), // features, массив строк — массив случайной длины из значений: wifi, dishwasher, parking, washer, elevator, conditioner. Значения не должны повторяться.
+      description: 'Придуманное описание помещения', // description, строка — описание помещения. Придумайте самостоятельно.
+      photos: getRandomArray(PHOTOS), // photos, массив строк — массив случайной длины из значений: https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/duonguyen-8LrGtIxxa4w.jpg, https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/brandon-hoogenboom-SNxQGWxZQi0.jpg, https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/claire-rendall-b6kAwr1i0Iw.jpg.
+    },
+
+    location: getLocation(),
   };
 
   const offers = [];
 
   for (let startNumber = 0; startNumber < offersNumber; startNumber++) {
-    offers.push(author, offer);
+    offers.push(offer);
   }
 
   return offers;
@@ -165,4 +178,3 @@ const createOffer = (offersNumber) => {
 
 const taskObject = createOffer(OFFERS_NUMBER);
 taskObject;
-
