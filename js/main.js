@@ -129,7 +129,7 @@ const createOffer = (offersNumber) => {
     // author, объект — описывает автора. Содержит одно поле:
     // avatar, строка — адрес изображения вида img/avatars/user{{xx}}.png, где {{xx}} — это число от 1 до 8 с ведущим нулём. Например, 01, 02 и т. д. Адреса изображений не повторяются.
       author: {
-        avatar: createAvatar,
+        avatar: createAvatar(),
       },
 
       offer: {
