@@ -1,80 +1,87 @@
 import {createOffer} from './data.js';
 
 const OFFERS_NUMBER = 10;
-
 const offers = createOffer(OFFERS_NUMBER);
-offers;
-
 const templateCardElement = document.querySelector('#card').content.querySelector('.popup');
-const popupTitle = templateCardElement.querySelector('.popup__title');
-const popupAdress = templateCardElement.querySelector('.popup__text--address');
-const popupPrice = templateCardElement.querySelector('.popup__text--price');
-const popupType = templateCardElement.querySelector('.popup__type');
-const popupCapacity = templateCardElement.querySelector('.popup__text--capacity');
-const popupTime = templateCardElement.querySelector('.popup__text--time');
-const popupFeaturesList = templateCardElement.querySelector('.popup__features');
-const popupFeaturesElement = popupFeaturesList.querySelectorAll('.popup__feature');
-const popupDescription = templateCardElement.querySelector('.popup__description');
-const popupPhotos = templateCardElement.querySelector('.popup__photos');
-const popupPhoto = popupPhotos.querySelector('.popup__photo');
+const mapCanvas = document.querySelector('.map__canvas');
 
-offers.forEach((element) => {
+//FUNCTION TRANSLATE TYPES
+const translateTypes = function (type) {
+  switch (type.offer.type) {
+    case 'flat':
+      type.offer.type = 'Квартира';
+      break;
+    case 'bungalow':
+      type.offer.type = 'Бунгало';
+      break;
+    case 'house':
+      type.offer.type= 'Дом';
+      break;
+    case 'palace':
+      type.offer.type= 'Дворец';
+      break;
+    case 'hotel':
+      type.offer.type= 'Отель';
+      break;
+  }
+  return type.offer.type;
+};
+
+
+//FUNCTION COSTS QUANTITY ROOMS AND GUESTS
+const getRoomsAndGuests = function (roomsValue, guestsValue) {
+  let rooms = '';
+  let guests = '';
+  if (roomsValue === 1) {
+    rooms = `${roomsValue} комната`;
+  } else if (roomsValue === 2 || roomsValue === 3 || roomsValue === 4) {
+    rooms = `${roomsValue} комнаты`;
+  } else {
+    rooms = `${roomsValue} комнат`;
+  }
+
+  if (guestsValue === 1) {
+    guests = `${guestsValue} гостя`;
+  } else {
+    guests = `${guestsValue} гостей`;
+  }
+  return `${rooms} для ${guests}`;
+};
+
+//FUNCTION RENDERS CARDS
+
+const renderCard = function (element) {
   const templateItem = templateCardElement.cloneNode(true);
-  popupTitle.textContent = element.offer.title;
-  popupAdress.textContent = element.offer.address;
-  popupPrice.textContent = `${element.offer.price}₽/ночь`;
 
-  const translateTypes = function (type) {
-    if (type === 'flat') {
-      type = 'Квартира';
-    } else if (type === 'bungalow') {
-      type = 'Бунгало';
-    } else if (type === 'house') {
-      type = 'Дом';
-    } else if (type === 'palace') {
-      type = 'Дворец';
-    } else if (type === 'hotel') {
-      type = 'Отель';
-    }
-    return type;
-  };
-  popupType.textContent = translateTypes(element.offer.type);
-  const getRoomsAndGuests = function () {
-    let rooms = '';
-    let guests = '';
-    if (element.offer.rooms === 1) {
-      rooms = `${element.offer.rooms} комната`;
-    } else if (element.offer.rooms === 2 || element.offer.rooms === 3 || element.offer.rooms === 4) {
-      rooms = `${element.offer.rooms} комнаты`;
-    } else {
-      rooms = `${element.offer.rooms} комнат`;
-    }
+  templateItem.querySelector('.popup__title').textContent = element.offer.title;
+  templateItem.querySelector('.popup__text--address').textContent = element.offer.address;
+  templateItem.querySelector('.popup__text--price').textContent = `${element.offer.price}₽/ночь`;
 
-    if (element.offer.guests === 1) {
-      guests = `${element.offer.guests} гостя`;
-    } else {
-      guests = `${element.offer.guests} гостей`;
-    }
-    return `${rooms} для ${guests}`;
-  };
-  popupCapacity.textContent = getRoomsAndGuests();
-  popupTime.textContent = `Заезд после ${element.offer.checkin} выезд до ${element.offer.checkout}`;
+  translateTypes(element);
+  templateItem.querySelector('.popup__type').textContent = element.offer.type;
+  templateItem.querySelector('.popup__text--capacity').textContent = getRoomsAndGuests(element.offer.rooms, element.offer.guests);
+  templateItem.querySelector('.popup__text--time').textContent = `Заезд после ${element.offer.checkin} выезд до ${element.offer.checkout}`;
 
   const modifiers = element.offer.features.map((feature) => `popup__feature--${feature}`);
-  popupFeaturesElement.forEach((item) => {
+  templateItem.querySelectorAll('.popup__feature').forEach((item) => {
     const modifier = item.classList[1];
-
     if (!modifiers.includes(modifier)) {
       item.remove();
     }
   });
 
-  popupDescription.textContent = element.offer.description;
+  templateItem.querySelector('.popup__description').textContent = element.offer.description;
+  const photoCatalog = templateItem.querySelector('.popup__photos');
+  const photoCard = photoCatalog.querySelector('.popup__photo');
   element.offer.photos.map((link) => {
-    popupPhoto.remove();
-    const photoElement = popupPhotos.insertAdjacentHTML('beforeend', `<img src="${link}" class="popup__photo" width="45" height="40" alt="Фотография жилья">`);
+    photoCard.remove();
+    const photoElement = photoCatalog.insertAdjacentHTML('beforeend', `<img src="${link}" class="popup__photo" width="45" height="40" alt="Фотография жилья">`);
     return photoElement;
   });
 
+  mapCanvas.appendChild(templateItem);
   return templateItem;
-});
+};
+
+renderCard(offers[0]);
+renderCard(offers[1]);
