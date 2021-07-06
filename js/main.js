@@ -1,4 +1,6 @@
 import {createOffer} from './data.js';
+import {activatePage} from './map.js';
+import './form.js';
 
 const OFFERS_NUMBER = 10;
 const offers = createOffer(OFFERS_NUMBER);
@@ -26,7 +28,6 @@ const translateTypes = function (type) {
   }
   return type.offer.type;
 };
-
 
 //FUNCTION COSTS QUANTITY ROOMS AND GUESTS
 const getRoomsAndGuests = function (roomsValue, guestsValue) {
@@ -85,3 +86,5 @@ const renderCard = function (element) {
 
 renderCard(offers[0]);
 renderCard(offers[1]);
+
+activatePage();
