@@ -1,9 +1,13 @@
 import {createOffer} from './data.js';
+import {loadMap} from './map.js';
+import {enablePageForms, disablePageForms} from './page.js';
 
 const OFFERS_NUMBER = 10;
 const offers = createOffer(OFFERS_NUMBER);
 const templateCardElement = document.querySelector('#card').content.querySelector('.popup');
 const mapCanvas = document.querySelector('.map__canvas');
+
+disablePageForms();
 
 //FUNCTION TRANSLATE TYPES
 const translateTypes = function (type) {
@@ -26,7 +30,6 @@ const translateTypes = function (type) {
   }
   return type.offer.type;
 };
-
 
 //FUNCTION COSTS QUANTITY ROOMS AND GUESTS
 const getRoomsAndGuests = function (roomsValue, guestsValue) {
@@ -85,3 +88,7 @@ const renderCard = function (element) {
 
 renderCard(offers[0]);
 renderCard(offers[1]);
+
+loadMap();
+enablePageForms();
+
