@@ -7,13 +7,16 @@ filterElement.forEach((filterEl) => {
   filterEl.setAttribute('disabled', '');
 });
 
+const mapFeatures = document.querySelector('.map__features');
+mapFeatures.setAttribute('disabled', '');
+
 const adForm = document.querySelector('.ad-form');
 adForm.classList.add('ad-form--disabled');
-const adFormElement = mapFilters.querySelectorAll('.map__filter');
+const adFormElement = adForm.querySelectorAll('.ad-form__element');
 adFormElement.forEach((formEl) => {
   formEl.setAttribute('disabled', '');
 });
 
-export {mapFilters, adForm};
-
+const adFormHeader = document.querySelector('.ad-form-header');
+adFormHeader.setAttribute('disabled', '');
 

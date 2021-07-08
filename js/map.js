@@ -1,4 +1,4 @@
-import {mapFilters, adForm} from './form.js';
+// import {mapFilters, adForm, mapFeatures, adFormHeader} from './form.js';
 //CONNECTION MAP
 
 const activatePage = function () {
@@ -13,20 +13,27 @@ const activatePage = function () {
     .openPopup();
 
   //ACTIVATE PAGE
-  // const mapFilters = document.querySelector('.map__filters');
+  const mapFilters = document.querySelector('.map__filters');
   mapFilters.classList.remove('map-filters--disabled');
   const filterElement = mapFilters.querySelectorAll('.map__filter');
   filterElement.forEach((filterEl) => {
     filterEl.removeAttribute('disabled');
   });
 
-  // const adForm = document.querySelector('.ad-form');
+  const mapFeatures = document.querySelector('.map__features');
+  mapFeatures.removeAttribute('disabled');
+
+  const adForm = document.querySelector('.ad-form');
   adForm.classList.remove('ad-form--disabled');
-  const adFormElement = mapFilters.querySelectorAll('.map__filter');
+  const adFormElement = adForm.querySelectorAll('.ad-form__element');
   adFormElement.forEach((formEl) => {
     formEl.removeAttribute('disabled');
   });
+
+  const adFormHeader = document.querySelector('.ad-form-header');
+  adFormHeader.removeAttribute('disabled');
 };
+
 
 export {activatePage};
 
