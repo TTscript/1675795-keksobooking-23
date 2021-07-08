@@ -89,10 +89,6 @@ const renderCard = function (element) {
 renderCard(offers[0]);
 renderCard(offers[1]);
 
-if (loadMap) {
-  enablePageForms();
-}
-
 loadMap();
-
+enablePageForms();
 
