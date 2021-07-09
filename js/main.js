@@ -1,6 +1,7 @@
 import {createOffer} from './data.js';
 import {loadMap} from './map.js';
 import {enablePageForms, disablePageForms} from './page.js';
+import './form.js';
 
 const OFFERS_NUMBER = 10;
 const offers = createOffer(OFFERS_NUMBER);
@@ -91,4 +92,5 @@ renderCard(offers[1]);
 
 loadMap();
 enablePageForms();
+
 
