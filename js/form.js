@@ -1,14 +1,11 @@
 const type = document.querySelector('#type');
-const title = document.querySelector('#title');
 const price = document.querySelector('#price');
-const roomNumber = document.querySelector('#room_number');
-const capacity = document.querySelector('#capacity');
-const oneGuest = capacity.querySelector('[value=\'1\']');
-const twoGuests = capacity.querySelector('[value=\'2\']');
-const threeGuests = capacity.querySelector('[value=\'3\']');
-const notForGuests = capacity.querySelector('[value=\'0\']');
-const TITLE_MIN_LENGTH = 30;
-const TITLE_MAX_LENGTH = 100;
+const roomsNumber = document.querySelector('#room_number');
+const capacityGuests = document.querySelector('#capacity');
+// const oneGuest = capacity.querySelector('[value=\'1\']');
+// const twoGuests = capacity.querySelector('[value=\'2\']');
+// const threeGuests = capacity.querySelector('[value=\'3\']');
+// const notForGuests = capacity.querySelector('[value=\'0\']');
 
 //FUNCTION SET ATTRIBUTE
 
@@ -40,47 +37,20 @@ type.addEventListener('change', (evt) => {
   }
 });
 
-roomNumber.addEventListener('change', (evt) => {
-  switch (evt.target.value) {
-    case '1':
-      capacity.value = '1';
-      oneGuest.setAttribute('disabled', '');
-      twoGuests.setAttribute('disabled', '');
-      threeGuests.setAttribute('disabled', '');
-      notForGuests.setAttribute('disabled', '');
-      break;
-    case '2':
-      capacity.value = '2';
-      oneGuest.removeAttribute('disabled', '');
-      twoGuests.removeAttribute('disabled', '');
-      threeGuests.setAttribute('disabled', '');
-      notForGuests.setAttribute('disabled', '');
-      break;
-    case '3':
-      capacity.value = '3';
-      oneGuest.removeAttribute('disabled', '');
-      twoGuests.removeAttribute('disabled', '');
-      threeGuests.removeAttribute('disabled', '');
-      notForGuests.setAttribute('disabled', '');
-      break;
-    case '100':
-      capacity.value = '0';
-      oneGuest.setAttribute('disabled', '');
-      twoGuests.setAttribute('disabled', '');
-      threeGuests.setAttribute('disabled', '');
-      notForGuests.removeAttribute('disabled', '');
-      break;
-  }
-});
+const guestRoomsMap = {
+  1: ['1'],
+  2: ['1', '2'],
+  3: ['1', '2', '3'],
+  100: ['0'],
+};
 
-title.addEventListener('input', () => {
-  const titleValueLength = title.value.length;
-  if (titleValueLength < TITLE_MIN_LENGTH) {
-    title.setCustomValidity(`Too short text length. I still have to put ${TITLE_MIN_LENGTH - titleValueLength}`);
-  } else if (titleValueLength > TITLE_MAX_LENGTH) {
-    title.setCustomValidity(`Too long text length. Please delete extra code. I have to delete ${titleValueLength - TITLE_MAX_LENGTH}`);
+const onSelectGuestsRoomsChange = () => {
+  if (guestRoomsMap[roomsNumber.value].indexOf(capacityGuests.value) === -1) {
+    capacityGuests.setCustomValidity('Укажите допустимое количество гостей');
   } else {
-    title.setCustomValidity('');
+    capacityGuests.setCustomValidity('');
   }
-  title.reportValidity();
-});
+};
+
+roomsNumber.addEventListener('change', onSelectGuestsRoomsChange);
+capacityGuests.addEventListener('change', onSelectGuestsRoomsChange);
