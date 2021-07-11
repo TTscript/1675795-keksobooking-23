@@ -2,10 +2,8 @@ const type = document.querySelector('#type');
 const price = document.querySelector('#price');
 const roomsNumber = document.querySelector('#room_number');
 const capacityGuests = document.querySelector('#capacity');
-// const oneGuest = capacity.querySelector('[value=\'1\']');
-// const twoGuests = capacity.querySelector('[value=\'2\']');
-// const threeGuests = capacity.querySelector('[value=\'3\']');
-// const notForGuests = capacity.querySelector('[value=\'0\']');
+const checkInTime = document.querySelector('#timein');
+const checkOutTime = document.querySelector('#timeout');
 
 //FUNCTION SET ATTRIBUTE
 
@@ -54,3 +52,10 @@ const onSelectGuestsRoomsChange = () => {
 
 roomsNumber.addEventListener('change', onSelectGuestsRoomsChange);
 capacityGuests.addEventListener('change', onSelectGuestsRoomsChange);
+
+const updateSelectValue = (targetSelect, selectToUpdate) => {
+  selectToUpdate.value = targetSelect.value;
+};
+
+checkInTime.addEventListener('change', () => updateSelectValue(checkInTime, checkOutTime));
+checkOutTime.addEventListener('change', () => updateSelectValue(checkOutTime, checkInTime));
