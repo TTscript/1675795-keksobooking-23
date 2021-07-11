@@ -54,15 +54,11 @@ roomsNumber.addEventListener('change', onSelectGuestsRoomsChange);
 capacityGuests.addEventListener('change', onSelectGuestsRoomsChange);
 
 const onSelectCheckInChange = () => {
-  if (checkInTime.value) {
-    checkOutTime.value = checkInTime.value;
-  }
+  checkOutTime.value = checkInTime.value;
 };
 
 const onSelectCheckOutChange = () => {
-  if (checkOutTime.value) {
-    checkInTime.value = checkOutTime.value;
-  }
+  checkInTime.value = checkOutTime.value;
 };
 
 checkInTime.addEventListener('change', onSelectCheckInChange);
