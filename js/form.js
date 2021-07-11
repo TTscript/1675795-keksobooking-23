@@ -53,13 +53,9 @@ const onSelectGuestsRoomsChange = () => {
 roomsNumber.addEventListener('change', onSelectGuestsRoomsChange);
 capacityGuests.addEventListener('change', onSelectGuestsRoomsChange);
 
-const onSelectCheckInChange = () => {
-  checkOutTime.value = checkInTime.value;
+const updateSelectValue = (targetSelect, selectToUpdate) => {
+  selectToUpdate.value = targetSelect.value;
 };
 
-const onSelectCheckOutChange = () => {
-  checkInTime.value = checkOutTime.value;
-};
-
-checkInTime.addEventListener('change', onSelectCheckInChange);
-checkOutTime.addEventListener('change', onSelectCheckOutChange);
+checkInTime.addEventListener('change', () => updateSelectValue(checkInTime, checkOutTime));
+checkOutTime.addEventListener('change', () => updateSelectValue(checkOutTime, checkInTime));
