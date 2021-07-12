@@ -116,4 +116,4 @@ const createOffer = (offersNumber) => {
   return offers;
 };
 
-export {createOffer};
+export {createOffer, getLocation};

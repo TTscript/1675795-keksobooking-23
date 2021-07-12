@@ -1,6 +1,5 @@
 import {createOffer} from './data.js';
 import {loadMap} from './map.js';
-import {enablePageForms, disablePageForms} from './page.js';
 import './form.js';
 
 const OFFERS_NUMBER = 10;
@@ -8,7 +7,6 @@ const offers = createOffer(OFFERS_NUMBER);
 const templateCardElement = document.querySelector('#card').content.querySelector('.popup');
 const mapCanvas = document.querySelector('.map__canvas');
 
-disablePageForms();
 
 //FUNCTION TRANSLATE TYPES
 const translateTypes = function (type) {
@@ -87,10 +85,6 @@ const renderCard = function (element) {
   return templateItem;
 };
 
-renderCard(offers[0]);
-renderCard(offers[1]);
+loadMap(renderCard(offers[1]));
 
-loadMap();
-enablePageForms();
-
-
+export {renderCard};
