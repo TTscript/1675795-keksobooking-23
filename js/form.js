@@ -5,6 +5,48 @@ const capacityGuests = document.querySelector('#capacity');
 const checkInTime = document.querySelector('#timein');
 const checkOutTime = document.querySelector('#timeout');
 
+//FUNCTION TRANSLATE TYPES
+const translateTypes = function (typeEl) {
+  switch (typeEl.offer.type) {
+    case 'flat':
+      typeEl.offer.type = 'Квартира';
+      break;
+    case 'bungalow':
+      typeEl.offer.type = 'Бунгало';
+      break;
+    case 'house':
+      typeEl.offer.type= 'Дом';
+      break;
+    case 'palace':
+      typeEl.offer.type= 'Дворец';
+      break;
+    case 'hotel':
+      typeEl.offer.type= 'Отель';
+      break;
+  }
+  return typeEl.offer.type;
+};
+
+//FUNCTION COSTS QUANTITY ROOMS AND GUESTS
+const getRoomsAndGuests = function (roomsValue, guestsValue) {
+  let rooms = '';
+  let guests = '';
+  if (roomsValue === 1) {
+    rooms = `${roomsValue} комната`;
+  } else if (roomsValue === 2 || roomsValue === 3 || roomsValue === 4) {
+    rooms = `${roomsValue} комнаты`;
+  } else {
+    rooms = `${roomsValue} комнат`;
+  }
+
+  if (guestsValue === 1) {
+    guests = `${guestsValue} гостя`;
+  } else {
+    guests = `${guestsValue} гостей`;
+  }
+  return `${rooms} для ${guests}`;
+};
+
 //FUNCTION SET ATTRIBUTE
 
 function setAttributes(el, attrs) {
@@ -59,3 +101,5 @@ const updateSelectValue = (targetSelect, selectToUpdate) => {
 
 checkInTime.addEventListener('change', () => updateSelectValue(checkInTime, checkOutTime));
 checkOutTime.addEventListener('change', () => updateSelectValue(checkOutTime, checkInTime));
+
+export {translateTypes, getRoomsAndGuests};
