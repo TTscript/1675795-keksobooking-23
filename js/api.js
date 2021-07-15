@@ -1,12 +1,6 @@
 //FUNCTION CREATE FETCH
-const createFetch = (onSuccess, onError) => () => {
-  fetch(
-    'https://23.javascript.pages.academy/keksobooking/data',
-    {
-      method: 'GET',
-      credentials: 'same-origin',
-    },
-  )
+const createFetchTemplate = (url, method, onSuccess, onError, body) => () => {
+  fetch(url, method, body)
     .then((response) => {
       if (response.ok) {
         return response.json();
@@ -22,6 +16,6 @@ const createFetch = (onSuccess, onError) => () => {
     });
 };
 
-export{createFetch};
+export{createFetchTemplate};
 
 

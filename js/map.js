@@ -123,11 +123,9 @@ const loadMap = function () {
     })
     .then((response) => response.json())
     .then((offersData) => {
-      console.log(offersData);
       createMarkers(offersData.slice(0, 3), map);
     })
-    .catch((err) => {
-      console.error(err);
+    .catch(() => {
     });
 
   createFetch(marker, LAT_TOKYO, LNG_TOKYO, map);

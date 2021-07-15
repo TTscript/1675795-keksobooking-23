@@ -30,5 +30,8 @@ const getRandomArray = (randomArray) => {
   return slicedRandomArray;
 };
 
-export {getRandomInteger, getRandomFloatingPoint, getRandomArray};
+//IS ESC EVENT
+const isEscEvent = (evt) => evt.key === 'Escape' || evt.key === 'Esc';
+
+export {getRandomInteger, getRandomFloatingPoint, getRandomArray, isEscEvent};
 

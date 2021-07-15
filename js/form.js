@@ -1,3 +1,5 @@
+import {isEscEvent} from './util.js';
+
 const type = document.querySelector('#type');
 const price = document.querySelector('#price');
 const roomsNumber = document.querySelector('#room_number');
@@ -10,7 +12,6 @@ const addressField = document.querySelector('#address');
 const bodyTag = document.querySelector('body');
 const successMessage = document.querySelector('#success').content.querySelector('.success');
 const errorMessage = document.querySelector('#error').content.querySelector('.error');
-const errorButton = errorMessage.querySelector('.error__button');
 
 //FUNCTION SUCCESS
 const createSuccessMessage = function () {
@@ -28,15 +29,12 @@ const createErrorMessage = function () {
 
 //FUNCTION CLOSE SUCCESS WINDOW
 const closeSuccessWindow = function () {
-  window.addEventListener('click', (evt) => {
-    if (evt.key === 'Esc' || evt.key === 'Escape') {
-      successMessage.remove();
-    }
+  window.addEventListener('click', () => {
     successMessage.remove();
   });
 
   window.addEventListener('keydown', (evt) => {
-    if (evt.key === 'Esc' || evt.key === 'Escape') {
+    if (isEscEvent(evt)) {
       successMessage.remove();
     }
   });
@@ -44,17 +42,12 @@ const closeSuccessWindow = function () {
 
 //FUNCTION CLOSE ERROR WINDOW
 const closeErrorWindow = function () {
-  window.addEventListener('click', (evt) => {
-    if (evt.key === 'Esc' || evt.key === 'Escape') {
-      errorMessage.remove();
-    } else if (errorButton.onclick) {
-      errorMessage.remove();
-    }
+  window.addEventListener('click', () => {
     errorMessage.remove();
   });
 
   window.addEventListener('keydown', (evt) => {
-    if (evt.key === 'Esc' || evt.key === 'Escape') {
+    if (isEscEvent(evt)) {
       errorMessage.remove();
     }
   });
