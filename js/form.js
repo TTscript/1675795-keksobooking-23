@@ -166,7 +166,7 @@ const createFetch = function (marker, lat, lng, map) {
     const formData = new FormData(evt.target);
 
     fetch(
-      'https://23.javascript.pages.academy/keksobookindsf',
+      'https://23.javascript.pages.academy/keksobooking',
       {
         method: 'POST',
         body: formData,
