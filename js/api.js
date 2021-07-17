@@ -1,6 +1,12 @@
 //FUNCTION CREATE FETCH
-const createFetchTemplate = (url, method, onSuccess, onError, body) => () => {
-  fetch(url, method, body)
+
+const sendRequest = (url, methodArg, bodyArg, onSuccess, onError) => {
+  fetch(
+    url,
+    {
+      method: methodArg,
+      body: bodyArg,
+    })
     .then((response) => {
       if (response.ok) {
         return response.json();
@@ -8,14 +14,14 @@ const createFetchTemplate = (url, method, onSuccess, onError, body) => () => {
 
       throw new Error(`${response.status} ${response.statusText}`);
     })
-    .then((json) => {
-      onSuccess(json);
+    .then(() => {
+      onSuccess();
     })
-    .catch((err) => {
-      onError(err);
+    .catch(() => {
+      onError();
     });
 };
 
-export{createFetchTemplate};
+export{sendRequest};
 
 

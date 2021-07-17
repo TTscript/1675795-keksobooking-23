@@ -1,7 +1,6 @@
 import {enablePageForms, disablePageForms} from './page.js';
-import {translateTypes, getRoomsAndGuests} from './form.js';
+import {translateTypes, getRoomsAndGuests, createFetch, resetButton} from './form.js';
 import './form.js';
-import { createFetch } from './form.js';
 
 const LAT_TOKYO = 35.6895000;
 const LNG_TOKYO = 139.6917100;
@@ -129,7 +128,7 @@ const loadMap = function () {
     });
 
   createFetch(marker, LAT_TOKYO, LNG_TOKYO, map);
-
+  resetButton(marker, LAT_TOKYO, LNG_TOKYO, map);
   marker.addTo(map);
 };
 

@@ -1,4 +1,5 @@
 import {isEscEvent} from './util.js';
+import {sendRequest} from './api.js';
 
 const type = document.querySelector('#type');
 const price = document.querySelector('#price');
@@ -7,51 +8,12 @@ const capacityGuests = document.querySelector('#capacity');
 const checkInTime = document.querySelector('#timein');
 const checkOutTime = document.querySelector('#timeout');
 const addForm = document.querySelector('.ad-form');
+const addFormReset = document.querySelector('.ad-form__reset');
 const filtersForm = document.querySelector('.map__filters');
 const addressField = document.querySelector('#address');
 const bodyTag = document.querySelector('body');
 const successMessage = document.querySelector('#success').content.querySelector('.success');
 const errorMessage = document.querySelector('#error').content.querySelector('.error');
-
-//FUNCTION SUCCESS
-const createSuccessMessage = function () {
-  const successMessageTemplate = successMessage.cloneNode(true);
-  bodyTag.appendChild(successMessage);
-  return successMessageTemplate;
-};
-
-//FUNCTION ERROR
-const createErrorMessage = function () {
-  const errorMessageTemplate = errorMessage.cloneNode(true);
-  bodyTag.appendChild(errorMessage);
-  return errorMessageTemplate;
-};
-
-//FUNCTION CLOSE SUCCESS WINDOW
-const closeSuccessWindow = function () {
-  window.addEventListener('click', () => {
-    successMessage.remove();
-  });
-
-  window.addEventListener('keydown', (evt) => {
-    if (isEscEvent(evt)) {
-      successMessage.remove();
-    }
-  });
-};
-
-//FUNCTION CLOSE ERROR WINDOW
-const closeErrorWindow = function () {
-  window.addEventListener('click', () => {
-    errorMessage.remove();
-  });
-
-  window.addEventListener('keydown', (evt) => {
-    if (isEscEvent(evt)) {
-      errorMessage.remove();
-    }
-  });
-};
 
 //FUNCTION TRANSLATE TYPES
 const translateTypes = function (typeEl) {
@@ -150,6 +112,73 @@ const updateSelectValue = (targetSelect, selectToUpdate) => {
 checkInTime.addEventListener('change', () => updateSelectValue(checkInTime, checkOutTime));
 checkOutTime.addEventListener('change', () => updateSelectValue(checkOutTime, checkInTime));
 
+//FUNCTION SUCCESS
+const createSuccessMessage = function () {
+  const successMessageTemplate = successMessage.cloneNode(true);
+  bodyTag.appendChild(successMessage);
+  return successMessageTemplate;
+};
+
+//FUNCTION ERROR
+const createErrorMessage = function () {
+  const errorMessageTemplate = errorMessage.cloneNode(true);
+  bodyTag.appendChild(errorMessage);
+  return errorMessageTemplate;
+};
+
+//FUNCTION CLOSE SUCCESS WINDOW
+const closeSuccessWindow = function () {
+  window.addEventListener('click', () => {
+    successMessage.remove();
+  });
+
+  window.addEventListener('keydown', (evt) => {
+    if (isEscEvent(evt)) {
+      successMessage.remove();
+    }
+  });
+};
+
+//FUNCTION CLOSE ERROR WINDOW
+const closeErrorWindow = function () {
+  window.addEventListener('click', () => {
+    errorMessage.remove();
+  });
+
+  window.addEventListener('keydown', (evt) => {
+    if (isEscEvent(evt)) {
+      errorMessage.remove();
+    }
+  });
+};
+
+//FUNCTION SUCCESS RESET FORM
+const resetForm = (marker, lat, lng, map) => {
+  addForm.reset();
+  filtersForm.reset();
+  addressField.value = marker.getLatLng();
+  marker.setLatLng([lat, lng]).addTo(map);
+  createSuccessMessage();
+  closeSuccessWindow();
+};
+
+//FUNCTION ERROR RESET FORM
+const errorForm = () => {
+  createErrorMessage();
+  closeErrorWindow();
+};
+
+//FUNCTION RESET BUTTON
+const resetButton = function (marker, lat, lng, map) {
+  addFormReset.addEventListener('click', (evt) => {
+    evt.preventDefault();
+    addForm.reset();
+    filtersForm.reset();
+    addressField.value = marker.getLatLng();
+    marker.setLatLng([lat, lng]).addTo(map);
+  });
+};
+
 //EVT FORM
 
 const createFetch = function (marker, lat, lng, map) {
@@ -157,39 +186,8 @@ const createFetch = function (marker, lat, lng, map) {
     evt.preventDefault();
 
     const formData = new FormData(evt.target);
-
-    fetch(
-      'https://23.javascript.pages.academy/keksobooking',
-      {
-        method: 'POST',
-        body: formData,
-      },
-    ) .then((response) => {
-      if (response.ok) {
-        return response;
-      }
-
-      throw new Error(`${response.status} - ${response.statusText}`, createErrorMessage(), closeErrorWindow());
-
-    })
-      .then(() => {
-        addForm.reset();
-        filtersForm.reset();
-        addressField.value = marker.getLatLng();
-        marker.setLatLng([lat, lng]).addTo(map);
-        createSuccessMessage();
-        closeSuccessWindow();
-      })
-      .catch(() => {
-        addForm.reset();
-        filtersForm.reset();
-        addressField.value = marker.getLatLng();
-        marker.setLatLng([lat, lng]).addTo(map);
-        createErrorMessage();
-        closeSuccessWindow();
-      });
+    sendRequest('https://23.javascript.pages.academy/keksobookingss', 'POST', formData, () => resetForm(marker, lat, lng, map), () => errorForm());
   });
 };
 
-
-export {translateTypes, getRoomsAndGuests, createFetch};
+export {translateTypes, getRoomsAndGuests, createFetch, resetForm, errorForm, resetButton};
