@@ -1,18 +1,14 @@
-import {createOffer} from './data.js';
 import {enablePageForms, disablePageForms} from './page.js';
-import {translateTypes, getRoomsAndGuests} from './form.js';
+import {translateTypes, getRoomsAndGuests, createFetch, resetButton, getErrorMessage} from './form.js';
 import './form.js';
+import {sendRequest} from './api.js';
 
-const OFFERS_NUMBER = 10;
 const LAT_TOKYO = 35.6895000;
 const LNG_TOKYO = 139.6917100;
-const offers = createOffer(OFFERS_NUMBER);
 const templateCardElement = document.querySelector('#card').content.querySelector('.popup');
-const mapCanvas = document.querySelector('.map__canvas');
 const addressField = document.querySelector('#address');
 
 //FUNCTION RENDERS CARDS
-
 const renderCard = function (element) {
   const templateItem = templateCardElement.cloneNode(true);
 
@@ -42,12 +38,39 @@ const renderCard = function (element) {
     return photoElement;
   });
 
-  mapCanvas.appendChild(templateItem);
   return templateItem;
 };
 
-//DOWNLOAD MAP
+// FUNCTION CREATE MARKERS
+const createMarkers = function (array, map) {
+  array.forEach((el) => {
 
+    const lat = el.location.lat;
+    const lng = el.location.lng;
+
+    const pinIcon = L.icon({
+      iconUrl: './img/pin.svg',
+      iconSize: [40, 40],
+      iconAnchor: [20, 40],
+    });
+
+    const pinMarker = L.marker(
+      {
+        lat,
+        lng,
+      },
+      {
+        icon: pinIcon,
+      },
+    );
+
+    pinMarker
+      .addTo(map)
+      .bindPopup(renderCard(el));
+  });
+};
+
+//FUNCTION DOWNLOAD MAP
 const loadMap = function () {
   disablePageForms();
   const map = L.map('map-canvas')
@@ -85,36 +108,19 @@ const loadMap = function () {
 
   addressField.value = marker.getLatLng();
 
-  marker.addTo(map);
-
   marker.on('move', (evt) => {
     addressField.value = `${evt.target.getLatLng().lat.toFixed(4)}, ${evt.target.getLatLng().lng.toFixed(4)}`;
   });
 
-  offers.forEach((el) => {
-    const lat = el.location.lat;
-    const lng = el.location.lng;
+  //FUNCTION ON DATA SUCCESS LOAD
+  const onDataSuccessLoad = (offersData) => {
+    createMarkers(offersData, map);
+  };
 
-    const pinIcon = L.icon({
-      iconUrl: './img/pin.svg',
-      iconSize: [40, 40],
-      iconAnchor: [20, 40],
-    });
-
-    const pinMarker = L.marker(
-      {
-        lat,
-        lng,
-      },
-      {
-        icon: pinIcon,
-      },
-    );
-
-    pinMarker
-      .addTo(map)
-      .bindPopup(renderCard(el));
-  });
+  sendRequest('https://23.javascript.pages.academy/keksobooking/data', 'GET', onDataSuccessLoad, getErrorMessage);
+  createFetch(marker, LAT_TOKYO, LNG_TOKYO, map);
+  resetButton(marker, LAT_TOKYO, LNG_TOKYO, map);
+  marker.addTo(map);
 };
 
-export {renderCard, loadMap};
+export {loadMap};
