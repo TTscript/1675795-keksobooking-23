@@ -3,7 +3,6 @@ import {translateTypes, getRoomsAndGuests, createFetch, resetButton, getErrorMes
 import './form.js';
 import {sendRequest} from './api.js';
 
-sendRequest;
 const LAT_TOKYO = 35.6895000;
 const LNG_TOKYO = 139.6917100;
 const templateCardElement = document.querySelector('#card').content.querySelector('.popup');
