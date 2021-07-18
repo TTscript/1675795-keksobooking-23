@@ -195,6 +195,9 @@ const getErrorMessage = () => {
   const element = document.createElement('p');
   element.textContent = 'При получении данных произошла ошибка';
   bodyTag.appendChild(element);
+  setTimeout(() => {
+    bodyTag.removeChild(element);
+  }, 2000);
   return element;
 };
 
