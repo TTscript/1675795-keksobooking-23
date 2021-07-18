@@ -1,6 +1,6 @@
 //FUNCTION CREATE FETCH
 
-const sendRequest = (url, methodArg, bodyArg, onSuccess, onError) => {
+const sendRequest = (url, methodArg, onSuccess, onError, bodyArg) => {
   fetch(
     url,
     {
@@ -14,14 +14,12 @@ const sendRequest = (url, methodArg, bodyArg, onSuccess, onError) => {
 
       throw new Error(`${response.status} ${response.statusText}`);
     })
-    .then(() => {
-      onSuccess();
+    .then((data) => {
+      onSuccess(data);
     })
-    .catch(() => {
-      onError();
+    .catch((err) => {
+      onError(err);
     });
 };
 
 export{sendRequest};
-
-

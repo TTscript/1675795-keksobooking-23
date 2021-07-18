@@ -1,7 +1,9 @@
 import {enablePageForms, disablePageForms} from './page.js';
-import {translateTypes, getRoomsAndGuests, createFetch, resetButton} from './form.js';
+import {translateTypes, getRoomsAndGuests, createFetch, resetButton, getErrorMessage} from './form.js';
 import './form.js';
+import {sendRequest} from './api.js';
 
+sendRequest;
 const LAT_TOKYO = 35.6895000;
 const LNG_TOKYO = 139.6917100;
 const templateCardElement = document.querySelector('#card').content.querySelector('.popup');
@@ -111,27 +113,15 @@ const loadMap = function () {
     addressField.value = `${evt.target.getLatLng().lat.toFixed(4)}, ${evt.target.getLatLng().lng.toFixed(4)}`;
   });
 
-  fetch(
-    'https://23.javascript.pages.academy/keksobooking/data')
-    .then((response) => {
-      if (response.ok) {
-        return response;
-      }
+  //FUNCTION ON DATA SUCCESS LOAD
+  const onDataSuccessLoad = (offersData) => {
+    createMarkers(offersData, map);
+  };
 
-      throw new Error(`${response.status} - ${response.statusText}`);
-    })
-    .then((response) => response.json())
-    .then((offersData) => {
-      createMarkers(offersData.slice(0, 3), map);
-    })
-    .catch(() => {
-    });
-
+  sendRequest('https://23.javascript.pages.academy/keksobooking/data', 'GET', onDataSuccessLoad, getErrorMessage);
   createFetch(marker, LAT_TOKYO, LNG_TOKYO, map);
   resetButton(marker, LAT_TOKYO, LNG_TOKYO, map);
   marker.addTo(map);
 };
 
 export {loadMap};
-
-

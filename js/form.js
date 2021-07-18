@@ -186,8 +186,16 @@ const createFetch = function (marker, lat, lng, map) {
     evt.preventDefault();
 
     const formData = new FormData(evt.target);
-    sendRequest('https://23.javascript.pages.academy/keksobookingss', 'POST', formData, () => resetForm(marker, lat, lng, map), () => errorForm());
+    sendRequest('https://23.javascript.pages.academy/keksobooking', 'POST', () => resetForm(marker, lat, lng, map), () => errorForm(), formData);
   });
 };
 
-export {translateTypes, getRoomsAndGuests, createFetch, resetForm, errorForm, resetButton};
+//FUNCTION GET ERROR MESSAGE
+const getErrorMessage = () => {
+  const element = document.createElement('p');
+  element.textContent = 'При получении данных произошла ошибка';
+  bodyTag.appendChild(element);
+  return element;
+};
+
+export {translateTypes, getRoomsAndGuests, createFetch, resetForm, errorForm, resetButton, getErrorMessage};
