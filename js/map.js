@@ -1,59 +1,100 @@
-import {enablePageForms, disablePageForms} from './page.js';
-import {translateTypes, getRoomsAndGuests, createFetch, resetButton, getErrorMessage} from './form.js';
+import {disablePageForms, enableMainForm, enableFilters} from './page.js';
+import {getRoomsAndGuests, createFetch, resetButton, onDataErrorLoad} from './form.js';
 import './form.js';
 import {sendRequest} from './api.js';
 
 const LAT_TOKYO = 35.6895000;
 const LNG_TOKYO = 139.6917100;
+const OFFERS_NUMBER = 10;
 const templateCardElement = document.querySelector('#card').content.querySelector('.popup');
 const addressField = document.querySelector('#address');
+const mapFilters = document.querySelector('.map__filters');
+
+const typeToTranslation = {
+  bungalow: 'Бунгало',
+  flat: 'Квартира',
+  hotel: 'Отель',
+  house:'Дом',
+  palace: 'Дворец',
+};
 
 //FUNCTION RENDERS CARDS
 const renderCard = function (element) {
   const templateItem = templateCardElement.cloneNode(true);
-
+  templateItem.querySelector('.popup__avatar').src = element.author.avatar;
   templateItem.querySelector('.popup__title').textContent = element.offer.title;
   templateItem.querySelector('.popup__text--address').textContent = element.offer.address;
   templateItem.querySelector('.popup__text--price').textContent = `${element.offer.price}₽/ночь`;
-
-  translateTypes(element);
-  templateItem.querySelector('.popup__type').textContent = element.offer.type;
+  templateItem.querySelector('.popup__type').textContent = typeToTranslation[element.offer.type];
   templateItem.querySelector('.popup__text--capacity').textContent = getRoomsAndGuests(element.offer.rooms, element.offer.guests);
-  templateItem.querySelector('.popup__text--time').textContent = `Заезд после ${element.offer.checkin} выезд до ${element.offer.checkout}`;
+  templateItem.querySelector('.popup__text--time ').textContent = `Заезд после ${element.offer.checkin} выезд до ${element.offer.checkout}`;
+  const featuresArray = element.offer.features;
 
-  const modifiers = element.offer.features.map((feature) => `popup__feature--${feature}`);
-  templateItem.querySelectorAll('.popup__feature').forEach((item) => {
-    const modifier = item.classList[1];
-    if (!modifiers.includes(modifier)) {
-      item.remove();
-    }
-  });
+  if (featuresArray === undefined) {
+    templateItem.querySelector('.popup__features').classList.add('hidden');
+  } else {
+    const modifiers = element.offer.features.map((feature) => `popup__feature--${feature}`);
+    templateItem.querySelectorAll('.popup__feature').forEach((item) => {
+      const modifier = item.classList[1];
+      if (!modifiers.includes(modifier)) {
+        item.remove();
+      }
+    });
+  }
 
   templateItem.querySelector('.popup__description').textContent = element.offer.description;
   const photoCatalog = templateItem.querySelector('.popup__photos');
   const photoCard = photoCatalog.querySelector('.popup__photo');
-  element.offer.photos.map((link) => {
-    photoCard.remove();
-    const photoElement = photoCatalog.insertAdjacentHTML('beforeend', `<img src="${link}" class="popup__photo" width="45" height="40" alt="Фотография жилья">`);
-    return photoElement;
-  });
 
+  if (element.offer.photos === undefined) {
+    photoCatalog.classList.add('hidden');
+  }
+  else {
+    element.offer.photos.map((link) => {
+      photoCard.remove();
+      const photoElement = photoCatalog.insertAdjacentHTML('beforeend', `<img src="${link}" class="popup__photo" width="45" height="40" alt="Фотография жилья">`);
+      return photoElement;
+    });
+  }
   return templateItem;
 };
 
-// FUNCTION CREATE MARKERS
-const createMarkers = function (array, map) {
-  array.forEach((el) => {
+//FUNCTION CREATE MAIN MARKER
+const createMainMarker = (map) => {
+  const mainPinIcon = L.icon({
+    iconUrl: './img/main-pin.svg',
+    iconSize: [52, 52],
+    iconAnchor: [26, 52],
+  });
+  const marker = L.marker(
+    {
+      lat: LAT_TOKYO,
+      lng: LNG_TOKYO,
+    },
+    {
+      draggable: true,
+      icon: mainPinIcon,
+    },
+  );
+  addressField.value = marker.getLatLng();
+  marker.on('move', (evt) => {
+    addressField.value = `${evt.target.getLatLng().lat.toFixed(4)}, ${evt.target.getLatLng().lng.toFixed(4)}`;
+  });
+  marker.addTo(map);
+  return marker;
+};
 
+// FUNCTION CREATE MARKERS
+const createMarkers = function (arrays, map, callback) {
+  const arr = arrays.slice(0, OFFERS_NUMBER);
+  arr.forEach((el) => {
     const lat = el.location.lat;
     const lng = el.location.lng;
-
     const pinIcon = L.icon({
       iconUrl: './img/pin.svg',
       iconSize: [40, 40],
       iconAnchor: [20, 40],
     });
-
     const pinMarker = L.marker(
       {
         lat,
@@ -67,16 +108,28 @@ const createMarkers = function (array, map) {
     pinMarker
       .addTo(map)
       .bindPopup(renderCard(el));
+
+    mapFilters.addEventListener('change', () => {
+      pinMarker.closePopup();
+    });
+    return pinMarker;
   });
+  callback;
 };
 
 //FUNCTION DOWNLOAD MAP
 const loadMap = function () {
   disablePageForms();
-  const map = L.map('map-canvas')
-    .on('load', () => {
-      enablePageForms();
-    })
+  const map = L.map('map-canvas');
+  const marker = createMainMarker(map);
+  const onDataSuccessLoad = (data) => {
+    createMarkers(data, map, enableFilters());
+  };
+
+  map.on('load', () => {
+    enableMainForm();
+    sendRequest('https://23.javascript.pages.academy/keksobooking/data', 'GET', onDataSuccessLoad, onDataErrorLoad);
+  })
     .setView({
       lat: LAT_TOKYO,
       lng: LNG_TOKYO,
@@ -89,38 +142,7 @@ const loadMap = function () {
     },
   ).addTo(map);
 
-  const mainPinIcon = L.icon({
-    iconUrl: './img/main-pin.svg',
-    iconSize: [52, 52],
-    iconAnchor: [26, 52],
-  });
-
-  const marker = L.marker(
-    {
-      lat: LAT_TOKYO,
-      lng: LNG_TOKYO,
-    },
-    {
-      draggable: true,
-      icon: mainPinIcon,
-    },
-  );
-
-  addressField.value = marker.getLatLng();
-
-  marker.on('move', (evt) => {
-    addressField.value = `${evt.target.getLatLng().lat.toFixed(4)}, ${evt.target.getLatLng().lng.toFixed(4)}`;
-  });
-
-  //FUNCTION ON DATA SUCCESS LOAD
-  const onDataSuccessLoad = (offersData) => {
-    createMarkers(offersData, map);
-  };
-
-  sendRequest('https://23.javascript.pages.academy/keksobooking/data', 'GET', onDataSuccessLoad, getErrorMessage);
   createFetch(marker, LAT_TOKYO, LNG_TOKYO, map);
   resetButton(marker, LAT_TOKYO, LNG_TOKYO, map);
-  marker.addTo(map);
 };
-
 export {loadMap};

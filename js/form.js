@@ -15,28 +15,6 @@ const bodyTag = document.querySelector('body');
 const successMessage = document.querySelector('#success').content.querySelector('.success');
 const errorMessage = document.querySelector('#error').content.querySelector('.error');
 
-//FUNCTION TRANSLATE TYPES
-const translateTypes = function (typeEl) {
-  switch (typeEl.offer.type) {
-    case 'flat':
-      typeEl.offer.type = 'Квартира';
-      break;
-    case 'bungalow':
-      typeEl.offer.type = 'Бунгало';
-      break;
-    case 'house':
-      typeEl.offer.type= 'Дом';
-      break;
-    case 'palace':
-      typeEl.offer.type= 'Дворец';
-      break;
-    case 'hotel':
-      typeEl.offer.type= 'Отель';
-      break;
-  }
-  return typeEl.offer.type;
-};
-
 //FUNCTION COSTS QUANTITY ROOMS AND GUESTS
 const getRoomsAndGuests = function (roomsValue, guestsValue) {
   let rooms = '';
@@ -186,12 +164,12 @@ const createFetch = function (marker, lat, lng, map) {
     evt.preventDefault();
 
     const formData = new FormData(evt.target);
-    sendRequest('https://23.javascript.pages.academy/keksobooking', 'POST', () => resetForm(marker, lat, lng, map), () => errorForm(), formData);
+    sendRequest('https://23.javascript.pages.academy/keksobookingss', 'POST', () => resetForm(marker, lat, lng, map), () => errorForm(), formData);
   });
 };
 
 //FUNCTION GET ERROR MESSAGE
-const getErrorMessage = () => {
+const onDataErrorLoad = () => {
   const element = document.createElement('p');
   element.textContent = 'При получении данных произошла ошибка';
   bodyTag.appendChild(element);
@@ -201,4 +179,4 @@ const getErrorMessage = () => {
   return element;
 };
 
-export {translateTypes, getRoomsAndGuests, createFetch, resetForm, errorForm, resetButton, getErrorMessage};
+export {getRoomsAndGuests, createFetch, resetForm, errorForm, resetButton, onDataErrorLoad};

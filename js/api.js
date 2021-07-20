@@ -1,11 +1,11 @@
 //FUNCTION CREATE FETCH
 
-const sendRequest = (url, methodArg, onSuccess, onError, bodyArg) => {
+const sendRequest = (url, method, onSuccess, onError, body) => {
   fetch(
     url,
     {
-      method: methodArg,
-      body: bodyArg,
+      method,
+      body,
     })
     .then((response) => {
       if (response.ok) {

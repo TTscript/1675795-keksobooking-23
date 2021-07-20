@@ -7,21 +7,24 @@ const filterElements = document.querySelectorAll('.map__filter, .map__features, 
 const disablePageForms = function () {
   adForm.classList.add('ad-form--disabled');
   mapFilters.classList.add('map-filters--disabled');
-
   filterElements.forEach((filterEl) => {
     filterEl.setAttribute('disabled', '');
   });
 };
 
-// ENABLE FORM
+// ENABLE MAIN FORM
 
-const enablePageForms = function () {
-  mapFilters.classList.remove('map-filters--disabled');
+const enableMainForm = function () {
   adForm.classList.remove('ad-form--disabled');
+};
 
+// ENABLE FILTERS
+
+const enableFilters = function () {
+  mapFilters.classList.remove('map-filters--disabled');
   filterElements.forEach((filterEl) => {
     filterEl.removeAttribute('disabled');
   });
 };
 
-export {enablePageForms, disablePageForms};
+export {disablePageForms, enableMainForm, enableFilters};
