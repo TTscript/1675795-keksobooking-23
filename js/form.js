@@ -164,7 +164,7 @@ const createFetch = function (marker, lat, lng, map) {
     evt.preventDefault();
 
     const formData = new FormData(evt.target);
-    sendRequest('https://23.javascript.pages.academy/keksobookingss', 'POST', () => resetForm(marker, lat, lng, map), () => errorForm(), formData);
+    sendRequest('https://23.javascript.pages.academy/keksobooking', 'POST', () => resetForm(marker, lat, lng, map), () => errorForm(), formData);
   });
 };
 

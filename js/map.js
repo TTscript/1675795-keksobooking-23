@@ -8,7 +8,12 @@ const LNG_TOKYO = 139.6917100;
 const OFFERS_NUMBER = 10;
 const templateCardElement = document.querySelector('#card').content.querySelector('.popup');
 const addressField = document.querySelector('#address');
-const mapFilters = document.querySelector('.map__filters');
+const mapFilters = document.querySelector('.map__filters-container');
+const housingType = document.querySelector('#housing-type');
+const housingPrice = document.querySelector('#housing-price');
+const housingRooms = document.querySelector('#housing-rooms');
+const housingGuests = document.querySelector('#housing-guests');
+let map;
 
 const typeToTranslation = {
   bungalow: 'Бунгало',
@@ -19,6 +24,7 @@ const typeToTranslation = {
 };
 
 //FUNCTION RENDERS CARDS
+
 const renderCard = function (element) {
   const templateItem = templateCardElement.cloneNode(true);
   templateItem.querySelector('.popup__avatar').src = element.author.avatar;
@@ -56,11 +62,12 @@ const renderCard = function (element) {
       return photoElement;
     });
   }
+
   return templateItem;
 };
 
 //FUNCTION CREATE MAIN MARKER
-const createMainMarker = (map) => {
+const createMainMarker = () => {
   const mainPinIcon = L.icon({
     iconUrl: './img/main-pin.svg',
     iconSize: [52, 52],
@@ -85,8 +92,10 @@ const createMainMarker = (map) => {
 };
 
 // FUNCTION CREATE MARKERS
-const createMarkers = function (arrays, map, callback) {
-  const arr = arrays.slice(0, OFFERS_NUMBER);
+
+const createMarkers = function (items) {
+  const arr = items.slice(0, OFFERS_NUMBER);
+
   arr.forEach((el) => {
     const lat = el.location.lat;
     const lng = el.location.lng;
@@ -104,31 +113,100 @@ const createMarkers = function (arrays, map, callback) {
         icon: pinIcon,
       },
     );
-
     pinMarker
       .addTo(map)
       .bindPopup(renderCard(el));
-
     mapFilters.addEventListener('change', () => {
       pinMarker.closePopup();
     });
-    return pinMarker;
   });
-  callback;
+  enableFilters();
 };
 
 //FUNCTION DOWNLOAD MAP
 const loadMap = function () {
   disablePageForms();
-  const map = L.map('map-canvas');
+  map = L.map('map-canvas');
   const marker = createMainMarker(map);
+
+  //FUNCTION FILTER BY TYPE
+  const filterByType = (data) => {
+    const typeData = data.filter((element) => housingType.value === 'any' ? true : element.offer.type === housingType.value);
+    // console.log(typeData);
+    return typeData;
+  };
+
+  //FUNCTION FILTER BY PRICE
+  const filterByPrice = (data) => {
+    const priceData = data.filter((element) => {
+      if (housingPrice.value === 'low') {
+        return element.offer.price < 10000;
+      } else if (housingPrice.value === 'middle') {
+        return element.offer.price >=10000 && element.offer.price <50000;
+      } else if (housingPrice.value === 'high') {
+        return element.offer.price >= 50000;
+      } else if (housingPrice.value === 'any') {
+        return true;
+      }
+    });
+    // console.log(housingPrice.value);
+    return priceData;
+  };
+
+  //FUNCTION FILTER BY ROOMS
+  const filterByRooms = (data) => {
+    const roomsData = data.filter((element) => {
+      if (housingRooms.value > 3) {
+        housingRooms.value = 3;
+      }
+      housingRooms.value === 'any' ? true : element.offer.rooms === housingRooms.value;
+    });
+    // console.log(roomsData);
+    return roomsData;
+  };
+
+  //FUNCTION FILTER BY GUESTS
+  const filterByGuests = (data) => {
+    const guestsData = data.filter((element) => {
+      if (housingGuests.value > 3) {
+        housingGuests.value = 3;
+      }
+      housingGuests.value === 'any' ? true : element.offer.guests === housingGuests.value;
+    });
+    // console.log(guestsData);
+    return guestsData;
+  };
+
+  //FUNCTION FILTER BY FEATURES
+  // const filterByFeatures = (data) => {
+  //   const featuresData = data.filter((element) => {
+  //     const featuresArray = element.offer.features;
+  //     for (let i = 0; i < featuresArray.length; i++) {
+  //       const currentEl = featuresArray[i];
+  //     }
+  //   });
+
+  //   return featuresData;
+  // };
+
+
+  //FUNCTION RENDER FILTERED MARKERS
+  const renderFilteredMarkers = (data) => {
+    filterByType(data);
+    filterByPrice(data);
+    filterByRooms(data);
+    filterByGuests(data);
+  };
+
   const onDataSuccessLoad = (data) => {
-    createMarkers(data, map, enableFilters());
+    mapFilters.addEventListener('change', () => renderFilteredMarkers(data));
+    createMarkers(data);
   };
 
   map.on('load', () => {
     enableMainForm();
     sendRequest('https://23.javascript.pages.academy/keksobooking/data', 'GET', onDataSuccessLoad, onDataErrorLoad);
+
   })
     .setView({
       lat: LAT_TOKYO,
@@ -145,4 +223,5 @@ const loadMap = function () {
   createFetch(marker, LAT_TOKYO, LNG_TOKYO, map);
   resetButton(marker, LAT_TOKYO, LNG_TOKYO, map);
 };
+
 export {loadMap};
