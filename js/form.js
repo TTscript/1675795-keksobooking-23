@@ -1,6 +1,7 @@
 import {isEscEvent} from './util.js';
 import {sendRequest} from './api.js';
 
+const REMOVE_DIV_TIMEOUT = 2000;
 const type = document.querySelector('#type');
 const price = document.querySelector('#price');
 const roomsNumber = document.querySelector('#room_number');
@@ -14,9 +15,13 @@ const addressField = document.querySelector('#address');
 const bodyTag = document.querySelector('body');
 const successMessage = document.querySelector('#success').content.querySelector('.success');
 const errorMessage = document.querySelector('#error').content.querySelector('.error');
+const previewAvatarImage = document.querySelector('.ad-form-header__preview').querySelector('img');
+const previewAvatarInput = document.querySelector('#avatar');
+const previewHousingDiv = document.querySelector('.ad-form__photo');
+const previewLivingPhotoInput = document.querySelector('#images');
 
 //FUNCTION COSTS QUANTITY ROOMS AND GUESTS
-const getRoomsAndGuests = function (roomsValue, guestsValue) {
+const getRoomsAndGuests = (roomsValue, guestsValue) => {
   let rooms = '';
   let guests = '';
   if (roomsValue === 1) {
@@ -37,11 +42,11 @@ const getRoomsAndGuests = function (roomsValue, guestsValue) {
 
 //FUNCTION SET ATTRIBUTE
 
-function setAttributes(el, attrs) {
+const setAttributes = (el, attrs) => {
   for(const key in attrs) {
     el.setAttribute(key, attrs[key]);
   }
-}
+};
 
 type.addEventListener('change', (evt) => {
   const typeValue = evt.target.value;
@@ -91,43 +96,54 @@ checkInTime.addEventListener('change', () => updateSelectValue(checkInTime, chec
 checkOutTime.addEventListener('change', () => updateSelectValue(checkOutTime, checkInTime));
 
 //FUNCTION SUCCESS
-const createSuccessMessage = function () {
+const createSuccessMessage = () => {
   const successMessageTemplate = successMessage.cloneNode(true);
   bodyTag.appendChild(successMessage);
   return successMessageTemplate;
 };
 
 //FUNCTION ERROR
-const createErrorMessage = function () {
+const createErrorMessage = () => {
   const errorMessageTemplate = errorMessage.cloneNode(true);
   bodyTag.appendChild(errorMessage);
   return errorMessageTemplate;
 };
 
 //FUNCTION CLOSE SUCCESS WINDOW
-const closeSuccessWindow = function () {
-  window.addEventListener('click', () => {
-    successMessage.remove();
-  });
+const closeSuccessPopupClick = () => {
+  successMessage.remove();
+  window.removeEventListener('click', closeSuccessPopupClick);
+};
 
-  window.addEventListener('keydown', (evt) => {
-    if (isEscEvent(evt)) {
-      successMessage.remove();
-    }
-  });
+const closeSuccessPopupKeydown = (evt) => {
+  if (isEscEvent(evt)) {
+    successMessage.remove();
+  }
+  window.removeEventListener('click', closeSuccessPopupKeydown);
+};
+
+const closeSuccessWindow = () => {
+  window.addEventListener('click', closeSuccessPopupClick);
+  window.addEventListener('keydown', closeSuccessPopupKeydown);
 };
 
 //FUNCTION CLOSE ERROR WINDOW
-const closeErrorWindow = function () {
-  window.addEventListener('click', () => {
-    errorMessage.remove();
-  });
+const closeErrorPopupClick = () => {
+  errorMessage.remove();
+  window.removeEventListener('click', closeErrorPopupClick);
+};
 
-  window.addEventListener('keydown', (evt) => {
-    if (isEscEvent(evt)) {
-      errorMessage.remove();
-    }
-  });
+const closeErrorPopupKeydown = (evt) => {
+  if (isEscEvent(evt)) {
+    errorMessage.remove();
+  }
+  window.removeEventListener('click', closeSuccessPopupKeydown);
+};
+
+const closeErrorWindow = () => {
+
+  window.addEventListener('click', closeErrorPopupClick);
+  window.addEventListener('keydown', closeErrorPopupKeydown);
 };
 
 //FUNCTION SUCCESS RESET FORM
@@ -147,7 +163,7 @@ const errorForm = () => {
 };
 
 //FUNCTION RESET BUTTON
-const resetButton = function (marker, lat, lng, map) {
+const resetButton = (marker, lat, lng, map) => {
   addFormReset.addEventListener('click', (evt) => {
     evt.preventDefault();
     addForm.reset();
@@ -158,11 +174,9 @@ const resetButton = function (marker, lat, lng, map) {
 };
 
 //EVT FORM
-
-const createFetch = function (marker, lat, lng, map) {
+const createFetch = (marker, lat, lng, map) => {
   addForm.addEventListener('submit', (evt) => {
     evt.preventDefault();
-
     const formData = new FormData(evt.target);
     sendRequest('https://23.javascript.pages.academy/keksobooking', 'POST', () => resetForm(marker, lat, lng, map), () => errorForm(), formData);
   });
@@ -170,13 +184,54 @@ const createFetch = function (marker, lat, lng, map) {
 
 //FUNCTION GET ERROR MESSAGE
 const onDataErrorLoad = () => {
-  const element = document.createElement('p');
-  element.textContent = 'При получении данных произошла ошибка';
-  bodyTag.appendChild(element);
+  const divElement = document.createElement('div');
+  divElement.classList.add('error');
+  divElement.style.paddingRight = '360px';
+  divElement.style.paddingLeft = '360px';
+  divElement.textContent = 'При загрузке данных с сервера произошла ошибка';
+  divElement.style.fontSize = '60px';
+  divElement.style.color = 'red';
+  bodyTag.appendChild(divElement);
   setTimeout(() => {
-    bodyTag.removeChild(element);
-  }, 2000);
-  return element;
+    divElement.remove();
+  }, REMOVE_DIV_TIMEOUT);
 };
 
-export {getRoomsAndGuests, createFetch, resetForm, errorForm, resetButton, onDataErrorLoad};
+// CREATE AVATAR PICTURE PREVIEW
+const createPreviewAvatar = () => {
+  const avatarReader = new FileReader();
+  avatarReader.onload = (evt) => {
+    previewAvatarImage.src = evt.target.result;
+  };
+  const loadImageFile = () => {
+    const file = previewAvatarInput.files[0];
+    avatarReader.readAsDataURL(file);
+  };
+  previewAvatarInput.addEventListener('change', loadImageFile);
+};
+createPreviewAvatar();
+
+//CREATE HOUSING PREVIEW
+const createPreviewLiving = () => {
+  const previewHousing = document.createElement('img');
+  previewHousing.classList.add('qu');
+  previewHousing.setAttribute('width', '50px');
+  previewHousing.setAttribute('height', '50px');
+  previewHousing.setAttribute('id', 'preview-living-image');
+  previewHousingDiv.appendChild(previewHousing);
+
+  previewHousingDiv.style.padding = '10px';
+  const livingReader = new FileReader();
+  livingReader.onload = (evt) => {
+    previewHousing.src = evt.target.result;
+  };
+  const loadImageFile = () => {
+    const file = previewLivingPhotoInput.files[0];
+    livingReader.readAsDataURL(file);
+  };
+  previewLivingPhotoInput.addEventListener('change', loadImageFile);
+};
+
+createPreviewLiving();
+
+export {getRoomsAndGuests, createFetch, resetButton, onDataErrorLoad};
