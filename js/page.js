@@ -4,7 +4,7 @@ const filterElements = document.querySelectorAll('.map__filter, .map__features, 
 
 // DISABLE FORM
 
-const disablePageForms = function () {
+const disablePageForms = () => {
   adForm.classList.add('ad-form--disabled');
   mapFilters.classList.add('map-filters--disabled');
   filterElements.forEach((filterEl) => {
@@ -14,13 +14,13 @@ const disablePageForms = function () {
 
 // ENABLE MAIN FORM
 
-const enableMainForm = function () {
+const enableMainForm = () => {
   adForm.classList.remove('ad-form--disabled');
 };
 
 // ENABLE FILTERS
 
-const enableFilters = function () {
+const enableFilters = () => {
   mapFilters.classList.remove('map-filters--disabled');
   filterElements.forEach((filterEl) => {
     filterEl.removeAttribute('disabled');
