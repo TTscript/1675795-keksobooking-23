@@ -2,6 +2,7 @@ import {isEscEvent} from './util.js';
 import {sendRequest} from './api.js';
 
 const REMOVE_DIV_TIMEOUT = 2000;
+const SEND_DATA_URL = 'https://23.javascript.pages.academy/keksobooking';
 const type = document.querySelector('#type');
 const price = document.querySelector('#price');
 const roomsNumber = document.querySelector('#room_number');
@@ -110,46 +111,46 @@ const createErrorMessage = () => {
 };
 
 //FUNCTION CLOSE SUCCESS WINDOW
-const closeSuccessPopupClick = () => {
+const onSuccessPopupClick = () => {
   successMessage.remove();
-  window.removeEventListener('click', closeSuccessPopupClick);
+  window.removeEventListener('click', onSuccessPopupClick);
 };
 
-const closeSuccessPopupKeydown = (evt) => {
+const onSuccessPopupEscKeydown = (evt) => {
   if (isEscEvent(evt)) {
     successMessage.remove();
   }
-  window.removeEventListener('click', closeSuccessPopupKeydown);
+  window.removeEventListener('click', onSuccessPopupEscKeydown);
 };
 
 const closeSuccessWindow = () => {
-  window.addEventListener('click', closeSuccessPopupClick);
-  window.addEventListener('keydown', closeSuccessPopupKeydown);
+  window.addEventListener('click', onSuccessPopupClick);
+  window.addEventListener('keydown', onSuccessPopupEscKeydown);
 };
 
 //FUNCTION CLOSE ERROR WINDOW
-const closeErrorPopupClick = () => {
+const onErrorPopupClick = () => {
   errorMessage.remove();
-  window.removeEventListener('click', closeErrorPopupClick);
+  window.removeEventListener('click', onErrorPopupClick);
 };
 
-const closeErrorPopupKeydown = (evt) => {
+const onErrorPopupEscKeydown = (evt) => {
   if (isEscEvent(evt)) {
     errorMessage.remove();
   }
-  window.removeEventListener('click', closeSuccessPopupKeydown);
+  window.removeEventListener('click', onErrorPopupEscKeydown);
 };
 
 const closeErrorWindow = () => {
-
-  window.addEventListener('click', closeErrorPopupClick);
-  window.addEventListener('keydown', closeErrorPopupKeydown);
+  window.addEventListener('click', onErrorPopupClick);
+  window.addEventListener('keydown', onErrorPopupEscKeydown);
 };
 
 //FUNCTION SUCCESS RESET FORM
-const resetForm = (marker, lat, lng, map) => {
+const resetForm = (marker, lat, lng, map, resetMarkers) => {
   addForm.reset();
   filtersForm.reset();
+  resetMarkers();
   addressField.value = marker.getLatLng();
   marker.setLatLng([lat, lng]).addTo(map);
   createSuccessMessage();
@@ -163,7 +164,7 @@ const errorForm = () => {
 };
 
 //FUNCTION RESET BUTTON
-const resetButton = (marker, lat, lng, map) => {
+const addResetButtonListener = (marker, lat, lng, map) => {
   addFormReset.addEventListener('click', (evt) => {
     evt.preventDefault();
     addForm.reset();
@@ -174,11 +175,11 @@ const resetButton = (marker, lat, lng, map) => {
 };
 
 //EVT FORM
-const createFetch = (marker, lat, lng, map) => {
+const addFormListener = (marker, lat, lng, map, resetMarkers) => {
   addForm.addEventListener('submit', (evt) => {
     evt.preventDefault();
     const formData = new FormData(evt.target);
-    sendRequest('https://23.javascript.pages.academy/keksobooking', 'POST', () => resetForm(marker, lat, lng, map), () => errorForm(), formData);
+    sendRequest(SEND_DATA_URL, 'POST', () => resetForm(marker, lat, lng, map, resetMarkers), () => errorForm(), formData);
   });
 };
 
@@ -234,4 +235,4 @@ const createPreviewLiving = () => {
 
 createPreviewLiving();
 
-export {getRoomsAndGuests, createFetch, resetButton, onDataErrorLoad};
+export {getRoomsAndGuests, addFormListener, addResetButtonListener, onDataErrorLoad};
